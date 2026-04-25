@@ -1,0 +1,11 @@
+itemId	nameFrench	nameEnglish	itemType	baseValue	weight	extraData
+1	Épée Rouillée	Rusty Sword	Weapon	10	3.00	{"damage": 5}
+2	Hache de Guerre	Battle Axe	Weapon	50	6.00	{"damage": 12}
+3	Dague en Os	Bone Dagger	Weapon	15	1.00	{"damage": 4}
+4	Armure de Cuir	Leather Armor	Armor	40	10.00	{"defense": 5}
+5	Bouclier de Bois	Wooden Shield	Armor	20	5.00	{"defense": 3}
+6	Cotte de Mailles	Chainmail	Armor	100	20.00	{"defense": 10}
+7	Collier en Argent	Silver Collar	Treasure	75	0.50	{"flavor": "Un collier gravé."}
+8	Clé en Fer	Iron Key	Quest	0	0.10	{"target": "Porte de la Cave"}
+9	Potion de Soins	Healing Potion	Consumable	25	0.50	{"heal": 20}
+10	Statue en Or Massif	Solid Gold Statue	Treasure	1000000	200.00	{"description": "Une statue incroyablement lourde et précieuse."}

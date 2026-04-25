@@ -1,0 +1,8 @@
+nodeId	title	parentId	nodeType	textFrench	textEnglish	northTarget	southTarget	eastTarget	westTarget	upTarget	downTarget	inTarget	outTarget	mapX	mapY	mapZ	isDiscovered
+101	Village	1	Small	Vous êtes au centre d'un village.	You are in the center of a village.	102	0	103	0	0	0	0	0	0	0	0	1
+102	Sentier	1	Small	Un sentier menant à la grotte.	A path leading to the cave.	105	101	0	0	0	0	106	0	0	1	0	0
+103	Forge	1	Small	Une vieille forge avec une trappe.	An old forge with a trapdoor.	0	0	104	101	0	107	0	0	1	0	0	0
+104	Jardin	1	Small	Un jardin secret rempli de fleurs.	A secret garden filled with flowers.	0	0	0	103	0	0	0	0	2	0	0	0
+105	Taverne	1	Small	Une taverne chaleureuse.	A cozy tavern.	0	102	0	0	0	0	0	0	0	2	0	0
+106	Grotte	1	Small	Une grotte sombre et humide.	A dark and damp cave.	0	0	0	0	0	0	0	102	0	1	0	0
+107	Cave	1	Small	Une cave poussiéreuse sous la forge.	A dusty cellar under the forge.	0	0	0	0	103	0	0	0	1	0	-1	0

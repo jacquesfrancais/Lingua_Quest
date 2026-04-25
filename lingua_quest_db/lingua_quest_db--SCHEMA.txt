@@ -1,0 +1,126 @@
+mysql> show tables;                                                             +---------------------------+
+| Tables_in_lingua_quest_db |
++---------------------------+
+| Characters                |
+| ItemInstances             |
+| ItemLibrary               |
+| Locations                 |
+| Npcs                      |
+| WorldTemplates            |
++---------------------------+
+6 rows in set (0.002 sec)
+
+mysql> show create table Characters\G;
+*************************** 1. row ***************************
+       Table: Characters
+Create Table: CREATE TABLE `Characters` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `characterName` varchar(100) DEFAULT 'New Adventurer',
+  `currentLocationID` int DEFAULT '101',
+  `hitPoints` int DEFAULT '100',
+  `maxHitPoints` int DEFAULT '100',
+  `strength` int DEFAULT '10',
+  `agility` int DEFAULT '10',
+  `charisma` int DEFAULT '10',
+  `gold` decimal(10,2) DEFAULT '50.00',
+  `speechSuccessCount` int DEFAULT '0',
+  `isShortcutUnlocked` tinyint(1) DEFAULT '0',
+  `ownerId` varchar(255) DEFAULT NULL,
+  `armor` int DEFAULT '0',
+  `experiencePoints` int DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ownerId` (`ownerId`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+mysql> show create table ItemInstances\G
+*************************** 1. row ***************************
+       Table: ItemInstances
+Create Table: CREATE TABLE `ItemInstances` (
+  `instanceId` int NOT NULL AUTO_INCREMENT,
+  `itemId` int DEFAULT NULL,
+  `ownerType` enum('Player','NPC','Room') DEFAULT NULL,
+  `ownerId` int DEFAULT NULL,
+  PRIMARY KEY (`instanceId`),
+  KEY `itemId` (`itemId`),
+  CONSTRAINT `iteminstances_ibfk_1` FOREIGN KEY (`itemId`) REFERENCES `ItemLibrary` (`itemId`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+mysql> show create table ItemLibrary\G
+*************************** 1. row ***************************
+       Table: ItemLibrary
+Create Table: CREATE TABLE `ItemLibrary` (
+  `itemId` int NOT NULL AUTO_INCREMENT,
+  `nameFrench` varchar(100) NOT NULL,
+  `nameEnglish` varchar(100) DEFAULT NULL,
+  `itemType` enum('Weapon','Armor','Consumable','Quest','Treasure') DEFAULT NULL,
+  `baseValue` int DEFAULT '0',
+  `weight` decimal(5,2) DEFAULT '0.00',
+  `extraData` json DEFAULT NULL,
+  PRIMARY KEY (`itemId`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+mysql> show create table Locations\G
+*************************** 1. row ***************************
+       Table: Locations
+Create Table: CREATE TABLE `Locations` (
+  `nodeId` int NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `parentId` int DEFAULT NULL,
+  `nodeType` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `textFrench` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `textEnglish` text COLLATE utf8mb4_unicode_ci,
+  `northTarget` int DEFAULT '0',
+  `southTarget` int DEFAULT '0',
+  `eastTarget` int DEFAULT '0',
+  `westTarget` int DEFAULT '0',
+  `upTarget` int DEFAULT '0',
+  `downTarget` int DEFAULT '0',
+  `inTarget` int DEFAULT '0',
+  `outTarget` int DEFAULT '0',
+  `mapX` int DEFAULT NULL,
+  `mapY` int DEFAULT NULL,
+  `mapZ` int DEFAULT NULL,
+  `isDiscovered` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`nodeId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.001 sec)
+
+mysql> show create table Npcs\G
+*************************** 1. row ***************************
+       Table: Npcs
+Create Table: CREATE TABLE `Npcs` (
+  `npcId` int NOT NULL AUTO_INCREMENT,
+  `npcNameFrench` varchar(100) DEFAULT NULL,
+  `npcNameEnglish` varchar(100) DEFAULT NULL,
+  `homeNodeId` int DEFAULT NULL,
+  `currentLocationId` int DEFAULT NULL,
+  `npcStatus` varchar(50) DEFAULT 'Active',
+  `disposition` varchar(50) DEFAULT 'Neutral',
+  `hitPoints` int DEFAULT NULL,
+  `maxHitPoints` int DEFAULT NULL,
+  `strength` int DEFAULT NULL,
+  `agility` int DEFAULT NULL,
+  `charisma` int DEFAULT NULL,
+  `dialogueTreeId` varchar(100) DEFAULT NULL,
+  `isMerchant` tinyint(1) DEFAULT '0',
+  `greetingFrench` text,
+  `greetingEnglish` text,
+  `armor` int DEFAULT '0',
+  `isDead` tinyint(1) DEFAULT '0',
+  `isAlly` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`npcId`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+mysql> show create table WorldTemplates\G
+*************************** 1. row ***************************
+       Table: WorldTemplates
+Create Table: CREATE TABLE `WorldTemplates` (
+  `templateId` int NOT NULL AUTO_INCREMENT,
+  `itemId` int DEFAULT NULL,
+  `ownerType` enum('Room','NPC','Player') DEFAULT NULL,
+  `ownerId` int DEFAULT NULL,
+  PRIMARY KEY (`templateId`),
+  KEY `itemId` (`itemId`),
+  CONSTRAINT `worldtemplates_ibfk_1` FOREIGN KEY (`itemId`) REFERENCES `ItemLibrary` (`itemId`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
