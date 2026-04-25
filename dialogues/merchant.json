@@ -1,0 +1,27 @@
+{
+  "startNode": "greeting",
+  "nodes": {
+    "greeting": {
+      "fr": "Bonjour ! Voulez-vous voir mes marchandises ?",
+      "en": "Hello! Would you like to see my wares?",
+      "options": [
+        { "fr": "Oui, montrez-moi.", "en": "Yes, show me.", "next": "shop" },
+        { "textToSay": "Je n'ai pas d'argent.", "fr": "Je n'ai pas d'argent.", "en": "I don't have any money.", "next": "poor_response" }
+      ]
+    },
+    "poor_response": {
+      "fr": "Revenez quand vous aurez de l'or !",
+      "en": "Come back when you have some gold!",
+      "options": [
+        { "fr": "D'accord, au revoir.", "en": "Okay, goodbye.", "next": "END" }
+      ]
+    },
+    "shop": {
+      "fr": "Désolé, je suis en train de déballer mes caisses. Revenez plus tard !",
+      "en": "Sorry, I'm currently unpacking my crates. Come back later!",
+      "options": [
+        { "fr": "D'accord.", "en": "Okay.", "next": "END" }
+      ]
+    }
+  }
+}

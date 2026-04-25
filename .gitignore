@@ -1,0 +1,40 @@
+# Environment variables
+.env
+.env.local
+
+# Logs
+*.log
+
+# Dependency folders
+vendor/
+node_modules/
+
+# Database dumps & exports
+*.sql
+*.csv
+*.tsv
+
+# Temp files
+tmp/
+cache/
+
+# Local config overrides
+db_config.php
+
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Spotlight
+.Spotlight-V100
+
+# Trash
+.Trashes
+
+# Time Machine
+.backupdb
