@@ -1,0 +1,27 @@
+{
+  "startNode": "greeting",
+  "nodes": {
+    "greeting": {
+      "fr": "Paix sur vous. Je suis sœur Béatrice. Le jardin guérit plus que les mots — avez-vous mal ou faim d'espoir ?",
+      "en": "Peace be upon you. I am Sister Beatrice. The garden heals more than words — are you in pain, or hungry for hope?",
+      "options": [
+        { "fr": "J'ai besoin d'un mot doux, rien de plus.", "en": "I need a kind word, nothing more.", "next": "comfort" },
+        { "fr": "Je me sens bien, merci. Puissez-vous bénir mon voyage.", "en": "I feel well, thank you. May you bless my journey.", "next": "bless" }
+      ]
+    },
+    "comfort": {
+      "fr": "Alors reposez l'esprit : chaque pas est un don, même ici.",
+      "en": "Then rest your mind: every step is a gift, even here.",
+      "options": [
+        { "fr": "C'est beau, merci.", "en": "That's beautiful, thank you.", "next": "END" }
+      ]
+    },
+    "bless": {
+      "fr": "Qu'il vous guide vers la lumière, où que la route mène.",
+      "en": "May it guide you toward the light, wherever the road leads.",
+      "options": [
+        { "fr": "Amen, et adieu.", "en": "Amen, and farewell.", "next": "END" }
+      ]
+    }
+  }
+}

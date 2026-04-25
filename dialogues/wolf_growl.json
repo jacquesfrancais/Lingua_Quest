@@ -1,0 +1,27 @@
+{
+  "startNode": "greeting",
+  "nodes": {
+    "greeting": {
+      "fr": "Grrr… Du sang frais. Partez, humain, ou sentez mes crocs !",
+      "en": "Grrr… Fresh blood. Leave, human, or feel my fangs!",
+      "options": [
+        { "fr": "Je n'ai pas peur. Montrez-moi ce que vous savez faire.", "en": "I'm not afraid. Show me what you can do.", "next": "taunt" },
+        { "fr": "D'accord, je m'en vais. Adieu !", "en": "All right, I'm leaving. Goodbye!", "next": "flee" }
+      ]
+    },
+    "taunt": {
+      "fr": "Oh ? Alors tenez… à distance ! (Le loup tente d'intimider.)",
+      "en": "Oh? Then keep… your distance! (The wolf tries to intimidate you.)",
+      "options": [
+        { "fr": "Pardon, j'ai changé d'avis. Je pars.", "en": "Sorry, I changed my mind. I'm going.", "next": "END" }
+      ]
+    },
+    "flee": {
+      "fr": "Intelligent. Ne revenez pas la nuit.",
+      "en": "Smart. Don't come back at night.",
+      "options": [
+        { "fr": "Compris.", "en": "Understood.", "next": "END" }
+      ]
+    }
+  }
+}

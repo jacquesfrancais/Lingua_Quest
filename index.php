@@ -33,51 +33,33 @@ try {
 <div id="game-container">
 <!-- Dashboard Container -->
 <div id="dashboard" style="border: 2px solid #444; padding: 15px; width: 300px; background: #f9f9f9;">
-    
-        <h2 id="textPlayerName" style="margin-top: 0; color: #8b0000;">Chargement...</h2>
-
-        <div id="dashboard" ...>
-    <!-- Add this toggle button at the top of the dashboard -->
-    <button id="btnTranslate" onclick="toggleTranslation()" style="width:100%; margin-bottom:10px; background:#2e7d32;">
-        Traduction: OFF (FR)
+    <h2 id="textPlayerName" data-pristine="1" style="margin-top: 0; color: #8b0000;">Chargement…</h2>
+    <button type="button" id="btnTranslate" onclick="toggleTranslation()" style="width:100%; margin-bottom:10px; background:#2e7d32;">
+        Traduction : OFF (FR)
     </button>
-    ...
-</div>
-
-
-    <!-- Navigation for Dashboard -->
     <div style="margin-bottom: 10px;">
-        <button onclick="showTab('tabBasics')">Basics</button>
-        <button onclick="showTab('tabStats')">Stats</button>
-        <button onclick="showTab('tabInv')">Inventory</button>
+        <button type="button" id="tabBtnBasics" onclick="showTab('tabBasics')">Bases</button>
+        <button type="button" id="tabBtnStats" onclick="showTab('tabStats')">Stats</button>
+        <button type="button" id="tabBtnInv" onclick="showTab('tabInv')">Inventaire</button>
     </div>
-
-    <!-- Tab 1: Basics -->
     <div id="tabBasics">
-        <strong>Or:</strong> <span id="textGold">50.00</span><br>
-        <strong>Succès:</strong> <span id="textSpeechTotal">0</span><br>
-        <strong>HP:</strong> <span id="textHP">0</span> / <span id="textMaxHP">0</span>
-
+        <span id="lblGold">Or :</span> <span id="textGold">50.00</span><br>
+        <span id="lblSuccess">Succès :</span> <span id="textSpeechTotal">0</span><br>
+        <span id="lblHP">PV :</span> <span id="textHP">0</span> / <span id="textMaxHP">0</span>
     </div>
-
-    <!-- Tab 2: Deep Stats -->
     <div id="tabStats" style="display:none;">
-        <strong>Force:</strong> <span id="textStr">10</span><br>
-        <strong>Agilité:</strong> <span id="textAgi">10</span><br>
-        <strong>Charisme:</strong> <span id="textCha">10</span>
-        <strong>Charge:</strong> <span id="textCurrentWeight">0</span> / <span id="textMaxWeight">50</span> kg
+        <span id="lblStr">Force :</span> <span id="textStr">10</span><br>
+        <span id="lblAgi">Agilité :</span> <span id="textAgi">10</span><br>
+        <span id="lblCha">Charisme :</span> <span id="textCha">10</span><br>
+        <span id="lblWeight">Charge :</span> <span id="textCurrentWeight">0</span> / <span id="textMaxWeight">50</span> kg
     </div>
-
-    <!-- Tab 3: Inventory -->
     <div id="tabInv" style="display:none;">
-        <strong>Sac à dos:</strong>
+        <span id="lblInv">Sac à dos :</span>
         <ul id="listInventory">
-            <!-- Items will be loaded here by PHP -->
-            <li>Vide</li>
+            <li id="invEmptyHint">Vide</li>
         </ul>
     </div>
-
-    <button onclick="confirmReset()" style="margin-top: 20px; background: #333; font-size: 0.7em;">
+    <button type="button" id="btnReset" onclick="confirmReset()" style="margin-top: 20px; background: #333; font-size: 0.7em;">
     Réinitialiser le jeu
     </button>
 </div>
@@ -120,12 +102,16 @@ try {
     <button id="btnRead" onclick="speakFrench()">🔊 Read Aloud</button>
     <button id="btnMic" onclick="startListening()">🎤 Parler (Speak)</button>
 </div>
+<div id="liveSpeechBox" style="margin-top: 10px; max-width: 640px;">
+    <label for="speechLiveTranscript" style="display:block; font-size:0.85em; color:#555; margin-bottom:4px;">Reconnaissance (texte en direct) :</label>
+    <textarea id="speechLiveTranscript" readonly rows="2" style="width:100%; font-family:Consolas,monospace; font-size:0.95em; box-sizing:border-box; padding:8px; background:#f5f5f5; border:1px solid #ccc; border-radius:4px; resize:vertical;" placeholder=""></textarea>
+</div>
 
 <!-- Manual Input Area (Hidden by default) -->
 <div id="manualInputArea" style="display: none; margin-top: 20px;">
-    <p style="color: orange;"><i>Le micro a du mal ? Tapez votre commande :</i></p>
-    <input type="text" id="keyboardInput" placeholder="Ex: Aller au nord">
-    <button onclick="handleManualSubmit()">Envoyer</button>
+    <p id="manualInputHint" style="color: orange;"><i>Le micro a du mal ? Saisissez votre commande :</i></p>
+    <input type="text" id="keyboardInput" placeholder="ex. : aller au nord" />
+    <button type="button" id="btnManualSend" onclick="handleManualSubmit()">Envoyer</button>
 </div>
 
 <!-- The Dialogue Overlay (This is what the error is looking for) -->
@@ -141,7 +127,7 @@ try {
     </div>
 
     <!-- A Close button just in case -->
-    <button onclick="document.getElementById('dialogueOverlay').style.display='none'" style="margin-top:15px; font-size: 0.8em; background: #5d4037;">Quitter la conversation</button>
+    <button type="button" id="btnDialogueClose" onclick="document.getElementById('dialogueOverlay').style.display='none'" style="margin-top:15px; font-size: 0.8em; background: #5d4037;">Quitter la conversation</button>
 </div>
 
 
@@ -150,7 +136,7 @@ try {
 </div>
 </div>
 
-<!-- Order is important: Helpers first, Startup last -->
+<script src="i18n.js"></script>
 <script src="ui.js"></script>
 <script src="speech.js"></script>
 <script src="engine.js"></script>

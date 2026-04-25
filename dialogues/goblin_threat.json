@@ -1,0 +1,27 @@
+{
+  "startNode": "greeting",
+  "nodes": {
+    "greeting": {
+      "fr": "Hé hé ! Un tout mou… Donnez l'or, ou c'est l'trouble !",
+      "en": "Heh heh! A soft one… Hand over the gold, or else!",
+      "options": [
+        { "fr": "Vous n'aurez pas un sou.", "en": "You won't get a cent.", "next": "refuse" },
+        { "fr": "D'accord, voici quelques pièces. Laissez-moi partir.", "en": "Fine, here are a few coins. Let me go.", "next": "bribe" }
+      ]
+    },
+    "refuse": {
+      "fr": "Alors gare à vous, grand maigre !",
+      "en": "Then watch yourself, tall and skinny!",
+      "options": [
+        { "fr": "Nous en reparlons. Au revoir.", "en": "We'll talk again. Goodbye.", "next": "END" }
+      ]
+    },
+    "bribe": {
+      "fr": "Hmm… C'est juste, mais j'peux m'taire. Dégueulez d'ici.",
+      "en": "Hmm… It's tight, but I can keep quiet. Get out of here.",
+      "options": [
+        { "fr": "Je m'éloigne déjà.", "en": "I'm already leaving.", "next": "END" }
+      ]
+    }
+  }
+}

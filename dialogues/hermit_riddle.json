@@ -1,0 +1,34 @@
+{
+  "startNode": "greeting",
+  "nodes": {
+    "greeting": {
+      "fr": "Chut… l'écho entend. Pour continuer, répondez : qu'est-ce qui avance devant le jour sans jamais le toucher ?",
+      "en": "Shh… the echo hears. To continue, answer: what moves before the day without ever touching it?",
+      "options": [
+        { "fr": "C'est l'ombre.", "en": "It is the shadow.", "next": "right" },
+        { "fr": "Je ne sais pas. Donnez un indice.", "en": "I don't know. Give me a hint.", "next": "hint" }
+      ]
+    },
+    "right": {
+      "fr": "L'ombre, oui. Le passage du savoir est un pas silencieux. Allez, question suivante : l'eau a nom, l'air n'en a guère. Que reste-t-il ?",
+      "en": "The shadow, yes. Knowledge's gate is a quiet step. Next: water has a name, air hardly does. What remains?",
+      "options": [
+        { "fr": "Le feu, peut-être — ou le calme d'après l'orage.", "en": "Fire, maybe — or the calm after the storm.", "next": "vague_end" }
+      ]
+    },
+    "hint": {
+      "fr": "Regardez sous vos pas quand le soleil brûle. Ce n'est pas lourd, c'est vôtre.",
+      "en": "Look under your feet when the sun blazes. It's not heavy; it's yours.",
+      "options": [
+        { "fr": "L'ombre, alors. Je comprends.", "en": "The shadow, then. I understand.", "next": "END" }
+      ]
+    },
+    "vague_end": {
+      "fr": "Suffit. L'hermite sourit, sans confirmer. L'essentiel est d'avoir quitté la certitude.",
+      "en": "Enough. The hermit smiles, without affirming. The point is to have left certainty behind.",
+      "options": [
+        { "fr": "Merci pour le jeu. Adieu.", "en": "Thanks for the game. Farewell.", "next": "END" }
+      ]
+    }
+  }
+}

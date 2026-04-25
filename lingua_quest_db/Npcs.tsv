@@ -1,8 +1,8 @@
 npcId	npcNameFrench	npcNameEnglish	homeNodeId	currentLocationId	npcStatus	disposition	hitPoints	maxHitPoints	strength	agility	charisma	dialogueTreeId	isMerchant	greetingFrench	greetingEnglish	armor	isDead	isAlly
-1	Le Loup Affamé	The Hungry Wolf	102	102	Active	Hostile	30	30	12	14	2	wolf_growl.json	0	NULL	NULL	2	0	0
-2	Le Gobelin Voleur	The Thief Goblin	105	105	Active	Hostile	20	20	8	16	4	goblin_threat.json	0	NULL	NULL	1	0	0
-3	Le Squelette Gardien	The Skeleton Guardian	107	107	Active	Hostile	45	45	15	5	1	skeleton_rattle.json	0	NULL	NULL	5	0	0
-4	Pierre le Forgeron	Pierre the Blacksmith	103	103	Active	Friendly	80	80	18	10	12	pierre_forge.json	1	NULL	NULL	0	0	1
-5	Sœur Béatrice	Sister Beatrice	104	104	Active	Friendly	50	50	6	8	18	beatrice_heal.json	0	NULL	NULL	0	0	1
-6	L'Ermite Mystérieux	The Mysterious Hermit	106	106	Active	Neutral	40	40	10	12	10	hermit_riddle.json	0	NULL	NULL	0	0	0
+1	Le Loup Affamé	The Hungry Wolf	102	102	Active	Hostile	30	30	12	14	2	wolf_growl.json	0	Grrr… Vous m'entendez, humain ? Partez, ou sentez la morsure !	Grrr… You hear that, human? Leave, or feel the bite!	2	0	0
+2	Le Gobelin Voleur	The Thief Goblin	105	105	Active	Hostile	20	20	8	16	4	goblin_threat.json	0	Hé hé ! L'or, le sac, tout de suite !	Heh heh! The gold, the bag, right now!	1	0	0
+3	Le Squelette Gardien	The Skeleton Guardian	107	107	Active	Hostile	45	45	15	5	1	skeleton_rattle.json	0	Cliquetis… Pas un pas de plus, vivant, sans le mot.	Rattle… Not one more step, living one, without the word.	5	0	0
+4	Pierre le Forgeron	Pierre the Blacksmith	103	103	Active	Friendly	80	80	18	10	12	pierre_forge.json	1	Bienvenue à la forge. Je suis Pierre : que puis-je forger aujourd'hui ?	Welcome to the forge. I'm Pierre—what can I shape for you today?	0	0	1
+5	Sœur Béatrice	Sister Beatrice	104	104	Active	Friendly	50	50	6	8	18	beatrice_heal.json	0	Paix sur vous, voyageur. Le jardin soigne les âmes lourdes.	Peace upon you, traveler. The garden heals heavy souls.	0	0	1
+6	L'Ermite Mystérieux	The Mysterious Hermit	106	106	Active	Neutral	40	40	10	12	10	hermit_riddle.json	0	L'écho s'éveille… Si vous avez le temps, j'ai une devinette.	The echo awakens… If you have time, I have a riddle.	0	0	0
 7	Le Marchand Ambulant	The Traveling Merchant	101	101	Active	Neutral	35	35	8	10	15	merchant.json	1	Bienvenue au village ! Voulez-vous commercer ?	Welcome to the village! Do you want to trade?	0	0	0

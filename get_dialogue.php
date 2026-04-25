@@ -10,13 +10,16 @@ try {
     $npc = $stmt->fetch();
 
     if ($npc && $npc['dialogueTreeId']) {
-        // 2. Load the JSON file content
-        $path = "dialogues/" . $npc['dialogueTreeId'];
+        $path = __DIR__ . "/dialogues/" . $npc['dialogueTreeId'];
         if (file_exists($path)) {
             echo file_get_contents($path);
         } else {
-            echo json_encode(["error" => "File not found"]);
+            echo json_encode(["error" => "File not found", "path" => $path]);
         }
+    } else {
+        echo json_encode([
+            "error" => $npc ? "No dialogue file assigned to this NPC" : "NPC not found",
+        ]);
     }
 } catch (PDOException $e) {
     echo json_encode(["error" => $e->getMessage()]);

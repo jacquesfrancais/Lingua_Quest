@@ -2,80 +2,167 @@
 let failCount = 0;
 let currentNodeId = "";
 
-function speakText(phrase) {
+function speakText(phrase, lang) {
+    if (!phrase) return;
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(phrase);
-    utterance.lang = 'fr-FR';
+    utterance.lang = lang || (isEnglishMode ? "en-GB" : "fr-FR");
     utterance.rate = 0.9;
     window.speechSynthesis.speak(utterance);
 }
 
 function speakFrench() {
-    const text = document.getElementById('description').innerText;
-    speakText(text);
+    const text = document.getElementById("description").innerText;
+    speakText(text, isEnglishMode ? "en-GB" : "fr-FR");
 }
 
 // --- SPEECH RECOGNITION ---
-const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-recognition.lang = 'fr-FR';
-
-function startListening() {
-    document.getElementById('btnMic').innerText = "Écoute...";
-    recognition.start();
+const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = SpeechRec ? new SpeechRec() : null;
+if (recognition) {
+    recognition.lang = "fr-FR";
+    recognition.continuous = false;
+    // Interim + single hypothesis = more frequent onresult and earlier partial text
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
 }
 
-recognition.onresult = (event) => {
-    const rawText = event.results[0][0].transcript;
-    const heardText = rawText.toLowerCase().trim();
-    document.getElementById('btnMic').innerText = "🎤 Parler";
-    
-    const log = document.getElementById('log');
-    log.innerHTML += `<br><span style="color: blue;">> "${rawText}"</span>`;
+function resetMicButton() {
+    const btn = document.getElementById("btnMic");
+    if (btn) btn.textContent = "🎤 " + t("btnMic");
+}
 
-    const dialogueBox = document.getElementById('dialogueOverlay');
-
-    // 1. Are we talking?
-    if (dialogueBox.style.display === 'block') {
-        processDialogueSpeech(heardText);
-    } 
-    // 2. Are we trying to pick up or drop something?
-    else if (heardText.includes("ramasser") || heardText.includes("prendre") || 
-             heardText.includes("lâcher") || heardText.includes("poser")) {
-        processActionSpeech(heardText);
+let liveTranscriptEl = null;
+function getLiveTranscriptEl() {
+    if (!liveTranscriptEl) {
+        liveTranscriptEl = document.getElementById("speechLiveTranscript");
     }
-    // 3. If none of the above, are we moving?
-    else {
-        processMovementSpeech(heardText);
-    }
-};
+    return liveTranscriptEl;
+}
 
+function setLiveTranscriptText(text) {
+    const el = getLiveTranscriptEl();
+    if (!el) return;
+    if (el.value === text) return;
+    el.value = text;
+    el.scrollTop = el.scrollHeight;
+}
+
+function startListening() {
+    if (!recognition) {
+        alert(t("speechNotSupported"));
+        return;
+    }
+    try {
+        document.getElementById("btnMic").textContent = t("btnMicListen");
+        setLiveTranscriptText("");
+        recognition.start();
+    } catch (e) {
+        console.error("recognition.start:", e);
+        resetMicButton();
+    }
+}
+
+if (recognition) {
+    recognition.onend = () => resetMicButton();
+    recognition.onerror = (ev) => {
+        console.error("recognition error:", ev.error);
+        resetMicButton();
+    };
+    // Placeholder as soon as actual audio or speech is detected (often a bit before first words)
+    if ("onaudiostart" in recognition) {
+        recognition.onaudiostart = () => {
+            if (getLiveTranscriptEl() && getLiveTranscriptEl().value === "") {
+                setLiveTranscriptText("…");
+            }
+        };
+    }
+    if ("onspeechstart" in recognition) {
+        recognition.onspeechstart = () => {
+            if (getLiveTranscriptEl() && getLiveTranscriptEl().value === "") {
+                setLiveTranscriptText("…");
+            }
+        };
+    }
+}
+
+if (recognition) {
+    recognition.onresult = (event) => {
+        let line = "";
+        for (let i = 0; i < event.results.length; i++) {
+            const alt = event.results[i][0];
+            line += alt.transcript;
+        }
+        setLiveTranscriptText(line);
+
+        const last = event.results[event.results.length - 1];
+        if (!last || !last.isFinal) {
+            return;
+        }
+
+        const rawText = line.trim();
+        const heardText = rawText.toLowerCase().trim();
+        resetMicButton();
+
+        const log = document.getElementById("log");
+        if (log) log.innerHTML += `<br><span style="color: blue;">> "${rawText}"</span>`;
+
+        const dialogueBox = document.getElementById("dialogueOverlay");
+
+        const inDialogue =
+            dialogueBox &&
+            (dialogueBox.style.display === "block" || window.getComputedStyle(dialogueBox).display === "block");
+        if (inDialogue) {
+            processDialogueSpeech(heardText);
+        } else if (
+            heardText.includes("ramasser") ||
+            heardText.includes("prendre") ||
+            heardText.includes("lâcher") ||
+            heardText.includes("poser")
+        ) {
+            processActionSpeech(heardText);
+        } else {
+            processMovementSpeech(heardText);
+        }
+    };
+}
 
 // Function A: Handles Dialogue Rewards (Perfect/Loose)
 function processDialogueSpeech(heardText) {
+    const log = document.getElementById("log");
+    if (!currentDialogueTree || !currentNodeId || !currentDialogueTree.nodes) {
+        if (log) log.innerHTML += `<br><span style="color:red;">${t("noDialogue")}</span>`;
+        return;
+    }
+    const node = currentDialogueTree.nodes[currentNodeId];
+    if (!node || !Array.isArray(node.options)) {
+        if (log) log.innerHTML += `<br><span style="color:red;">${t("invalidNode")}</span>`;
+        return;
+    }
     let bestMatch = null;
     let maxScore = 0;
 
-    // 'currentNodeId' must be set when you load a dialogue node
-    const options = currentDialogueTree.nodes[currentNodeId].options;
-
-    options.forEach(opt => {
-        let score = getSimilarity(heardText, opt.fr.toLowerCase().trim());
+    const options = node.options;
+    options.forEach((opt) => {
+        const phrase = (opt.fr || opt.textToSay || "").toLowerCase().trim();
+        if (!phrase) return;
+        const score = getSimilarity(heardText, phrase);
         if (score > maxScore) {
             maxScore = score;
             bestMatch = opt;
         }
     });
 
-    if (maxScore >= 0.95) {
-        log.innerHTML += `<br><span style="color: gold;">Parfait ! +0.20 Or</span>`;
+    if (maxScore >= 0.95 && bestMatch && bestMatch.next !== undefined) {
+        if (log) log.innerHTML += `<br><span style="color: gold;">${t("perfect")}</span>`;
         awardSpeechGold(heardText, 0.20);
         loadDialogueNode(bestMatch.next);
-    } else if (maxScore >= 0.75) {
-        log.innerHTML += `<br><span style="color: green;">Bien ! +0.10 Or</span>`;
+    } else if (maxScore >= 0.75 && bestMatch && bestMatch.next !== undefined) {
+        if (log) log.innerHTML += `<br><span style="color: green;">${t("good")}</span>`;
         awardSpeechGold(heardText, 0.10);
         loadDialogueNode(bestMatch.next);
     } else {
-        log.innerHTML += `<br><span style="color: red;">Pas compris. Réessayez !</span>`;
+        if (log) log.innerHTML += `<br><span style="color: red;">${t("notUnderstood")}</span>`;
     }
 }
 
@@ -110,23 +197,25 @@ function processMovementSpeech(heardText) {
     const log = document.getElementById('log');
 
     if (highestScore >= 0.95) {
-        let targetId = currentRoom[bestDir + 'Target'];
+        let targetId = currentRoom[bestDir + "Target"];
         if (targetId && targetId !== 0) {
-            log.innerHTML += `<br><span style="color: gold;">Parfait ! (100%) +0.20 Or</span>`;
+            if (log) log.innerHTML += `<br><span style="color: gold;">${t("movePerfect")}</span>`;
             changeRoom(targetId);
-            awardSpeechGold(heardText, 0.20); // Perfect Award
+            awardSpeechGold(heardText, 0.2);
         }
-    } 
-    else if (highestScore >= 0.75) {
-        let targetId = currentRoom[bestDir + 'Target'];
+    } else if (highestScore >= 0.75) {
+        let targetId = currentRoom[bestDir + "Target"];
         if (targetId && targetId !== 0) {
-            log.innerHTML += `<br><span style="color: green;">Bien ! (${Math.round(highestScore*100)}%) +0.10 Or</span>`;
+            const good =
+                typeof t("moveGood") === "function"
+                    ? t("moveGood")(Math.round(highestScore * 100))
+                    : t("moveGood");
+            if (log) log.innerHTML += `<br><span style="color: green;">${good}</span>`;
             changeRoom(targetId);
-            awardSpeechGold(heardText, 0.10); // Loose Award
+            awardSpeechGold(heardText, 0.1);
         }
-    } 
-    else {
-        log.innerHTML += `<br><span style="color: red;">Désolé, je n'ai pas compris la direction.</span>`;
+    } else {
+        if (log) log.innerHTML += `<br><span style="color: red;">${t("noDirection")}</span>`;
     }
 }
 
@@ -147,7 +236,7 @@ function processActionSpeech(heardText) {
     const isDrop = dropVerbs.some(v => heardText.includes(v));
 
     if (!isTake && !isDrop) {
-        log.innerHTML += `<br><span style="color: red;">Je n'ai pas compris l'action.</span>`;
+        if (log) log.innerHTML += `<br><span style="color: red;">${t("noAction")}</span>`;
         return;
     }
 
@@ -182,13 +271,21 @@ function processActionSpeech(heardText) {
 
     // Final Decision based on the Entire Phrase Score
     if (highestScore >= 0.95) {
-        log.innerHTML += `<br><span style="color: gold;">Parfait ! (100%) +0.20 Or</span>`;
-        handleItemAction(bestAction, detectedItem, 0.20);
+        if (log) log.innerHTML += `<br><span style="color: gold;">${t("actPerfect")}</span>`;
+        handleItemAction(bestAction, detectedItem, 0.2);
     } else if (highestScore >= 0.75) {
-        log.innerHTML += `<br><span style="color: green;">Bien ! (${Math.round(highestScore*100)}%) +0.10 Or</span>`;
-        handleItemAction(bestAction, detectedItem, 0.10);
+        const g =
+            typeof t("actGood") === "function"
+                ? t("actGood")(Math.round(highestScore * 100))
+                : t("actGood");
+        if (log) log.innerHTML += `<br><span style="color: green;">${g}</span>`;
+        handleItemAction(bestAction, detectedItem, 0.1);
     } else {
-        log.innerHTML += `<br><span style="color: red;">Pas compris (${Math.round(highestScore*100)}%). Réessayez la phrase complète.</span>`;
+        const nu =
+            typeof t("notUnderstoodItem") === "function"
+                ? t("notUnderstoodItem")(Math.round(highestScore * 100))
+                : t("notUnderstoodItem");
+        if (log) log.innerHTML += `<br><span style="color: red;">${nu}</span>`;
     }
 }
 

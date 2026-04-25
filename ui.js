@@ -7,10 +7,11 @@ function showTab(tabId) {
 
 function toggleTranslation() {
     isEnglishMode = !isEnglishMode;
-    const btn = document.getElementById('btnTranslate');
-    btn.innerText = isEnglishMode ? "Traduction: ON (EN)" : "Traduction: OFF (FR)";
-    btn.style.background = isEnglishMode ? "#1565c0" : "#2e7d32";
-    if (currentRoomData) updateRoomDisplay(currentRoomData);
+    const btn = document.getElementById("btnTranslate");
+    if (btn) {
+        btn.style.background = isEnglishMode ? "#1565c0" : "#2e7d32";
+    }
+    applyUILanguage();
 }
 
 function updateRoomDisplay(data) {
@@ -23,12 +24,12 @@ function updateRoomDisplay(data) {
     
     // 2. NPCs (Turn names into clickable buttons)
     if (data.npcs && data.npcs.length > 0) {
-        descHtml += `<p style="color: #4e342e;"><b>👥 Personnages ici:</b> `;
+        descHtml += `<p style="color: #4e342e;"><b>👥 ${t("peopleHere")}</b> `;
         
-        data.npcs.forEach(npc => {
+        data.npcs.forEach((npc) => {
             const displayName = isEn ? npc.npcNameEnglish : npc.npcNameFrench;
-            // We create a button that calls startDialogue with the NPC's ID
-            descHtml += `<button class="btnTalk" onclick="startDialogue(${npc.npcId}, '${displayName}')">💬 Parler à ${displayName}</button> `;
+            const safeLabel = String(displayName).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+            descHtml += `<button type="button" class="btnTalk" data-npc-id="${Number(npc.npcId)}">💬 ${t("talkTo")} ${safeLabel}</button> `;
         });
         
         descHtml += `</p>`;
@@ -36,11 +37,22 @@ function updateRoomDisplay(data) {
 
     // 3. Items
     if (data.items && data.items.length > 0) {
-        const itemNames = data.items.map(item => isEn ? item.nameEnglish : item.nameFrench);
-        descHtml += `<p style="color: #2e7d32;"><b>📦 Objets au sol:</b> ${itemNames.join(', ')}</p>`;
+        const itemNames = data.items.map((item) => (isEn ? item.nameEnglish : item.nameFrench));
+        descHtml += `<p style="color: #2e7d32;"><b>📦 ${t("itemsHere")}</b> ${itemNames.join(", ")}</p>`;
     }
 
-    document.getElementById('description').innerHTML = descHtml;
+    const descEl = document.getElementById("description");
+    descEl.innerHTML = descHtml;
+    descEl.querySelectorAll(".btnTalk").forEach((btn) => {
+        const id = parseInt(btn.getAttribute("data-npc-id"), 10);
+        btn.addEventListener("click", () => {
+            const row = (data.npcs || []).find((n) => Number(n.npcId) === id);
+            const name = row
+                ? (isEnglishMode ? row.npcNameEnglish : row.npcNameFrench)
+                : "NPC";
+            startDialogue(id, name);
+        });
+    });
 }
 
 function updateCompass(room) {
@@ -61,12 +73,18 @@ function updateCompass(room) {
 }
 
 function handleManualSubmit() {
-    const typed = document.getElementById('keyboardInput').value.toLowerCase().trim();
+    const typed = document.getElementById("keyboardInput").value.toLowerCase().trim();
     let target = 0;
-    if (typed.includes("nord")) target = currentRoom.northTarget;
-    else if (typed.includes("sud")) target = currentRoom.southTarget;
-    else if (typed.includes("est")) target = currentRoom.eastTarget;
-    else if (typed.includes("ouest")) target = currentRoom.westTarget;
+    if (typed.includes("nord") || typed.includes("north")) target = currentRoom.northTarget;
+    else if (typed.includes("sud") || typed.includes("south")) target = currentRoom.southTarget;
+    else if (
+        typed.includes("east") ||
+        typed.includes("l'est") ||
+        typed.includes("à l'est") ||
+        typed.includes("a l'est")
+    )
+        target = currentRoom.eastTarget;
+    else if (typed.includes("ouest") || typed.includes("west")) target = currentRoom.westTarget;
 
     if (target && target !== 0) {
         document.getElementById('keyboardInput').value = "";
@@ -74,12 +92,12 @@ function handleManualSubmit() {
         document.getElementById('manualInputArea').style.display = 'none';
         changeRoom(target);
     } else {
-        alert("Inconnu.");
+        alert(t("unknownCmd"));
     }
 }
 // --- Game Reset Function ---
 function confirmReset() {
-    if (confirm("Voulez-vous vraiment réinitialiser tout le jeu ?")) {
+    if (confirm(t("resetConfirm"))) {
         fetch('reset_game.php')
             .then(res => res.json())
             .then(data => {

@@ -1,0 +1,27 @@
+{
+  "startNode": "greeting",
+  "nodes": {
+    "greeting": {
+      "fr": "Salut, voyageur ! J'suis Pierre. La forge fume, les lames patientent. Vous voulez forger, réparer, ou bavarder ?",
+      "en": "Hey, traveler! I'm Pierre. The forge is hot, the blades wait. Want to craft, fix, or chat?",
+      "options": [
+        { "fr": "Parlez-moi de votre travail ici.", "en": "Tell me about your work here.", "next": "craft" },
+        { "fr": "Je cherche seulement des informations.", "en": "I'm only looking for information.", "next": "info" }
+      ]
+    },
+    "craft": {
+      "fr": "Le feu mange l'acier et rend le bord fiable. Revenez avec du métal, on en fera un outil.",
+      "en": "Fire eats steel and makes the edge true. Come back with metal, we'll make a tool of it.",
+      "options": [
+        { "fr": "Merci, je m'en souviendrai.", "en": "Thanks, I'll remember that.", "next": "END" }
+      ]
+    },
+    "info": {
+      "fr": "La trappe, là-bas ? On dit qu'un vieux trésor s'y cache, mais la serrure tient encore.",
+      "en": "The trapdoor, over there? They say an old treasure hides there, but the lock still holds.",
+      "options": [
+        { "fr": "Intéressant. Merci, Pierre.", "en": "Interesting. Thank you, Pierre.", "next": "END" }
+      ]
+    }
+  }
+}

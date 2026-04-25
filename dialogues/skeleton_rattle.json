@@ -1,0 +1,27 @@
+{
+  "startNode": "greeting",
+  "nodes": {
+    "greeting": {
+      "fr": "Cliquetis… Aucun vivant n'avance. Mot de passe, ou retraite.",
+      "en": "Rattle… No living thing passes. Password, or retreat.",
+      "options": [
+        { "fr": "Le passage est accordé par la clé d'os.", "en": "Passage is granted by the bone key.", "next": "lore" },
+        { "fr": "Je recule. À plus tard.", "en": "I'm stepping back. Until later.", "next": "retreat" }
+      ]
+    },
+    "lore": {
+      "fr": "Les mots anciens… Peut-être. Montrez l'artefact, ou c'est l'oubli.",
+      "en": "Old words… Perhaps. Show the artifact, or face oblivion.",
+      "options": [
+        { "fr": "Je n'ai rien à montrer. Je me retire.", "en": "I have nothing to show. I withdraw.", "next": "END" }
+      ]
+    },
+    "retreat": {
+      "fr": "Sage. L'os garde le seuil.",
+      "en": "Wise. The bone keeps the threshold.",
+      "options": [
+        { "fr": "Oui, au revoir.", "en": "Yes, goodbye.", "next": "END" }
+      ]
+    }
+  }
+}
